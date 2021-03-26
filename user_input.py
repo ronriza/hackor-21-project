@@ -18,4 +18,3 @@ class Person:
 
 
 # Need to create logic to cap radius
-
