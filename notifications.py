@@ -20,27 +20,29 @@ class Notifications:
             except KeyError:
                 location_names = []
                 for site in self.matches[person]:
-                    location_names.append(site._location)
+                    location_names.append(site.location)
                 locations = "-" + "\n-".join(location_names)
-                if person._email:
+                if person.email:
                     self.email_notify(person, locations)
-                if person._phone_number:
+                if person.phone_number:
                     self.phone_notify(person, locations)
                 self.notified[person] = True
             else:
                 continue
 
-    def email_notify(self, person, locations):
+    @staticmethod
+    def email_notify(person, locations):
         """sends email notification"""
         conn = smtplib.SMTP('smtp.gmail.com', 587)
         conn.ehlo()
         conn.starttls()
         conn.login('covidvaccinenotification@gmail.com', os.environ['password'])
-        conn.sendmail('covidvaccinenotifier@gmail.com', person._email,
+        conn.sendmail('covidvaccinenotifier@gmail.com', person.email,
                       'Subject: New vaccine availability\n\nWe have found new vaccine '
                       'availability for you at the following locations:\n' + locations)
 
-    def phone_notify(self, person, locations):
+    @staticmethod
+    def phone_notify(person, locations):
         """sends sms notification"""
         twilio_notify(person, locations)
 

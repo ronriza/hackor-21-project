@@ -1,5 +1,6 @@
 import csv
 
+
 class Site:
     """Site that may or may not have availability"""
 

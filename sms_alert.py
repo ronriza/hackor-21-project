@@ -8,11 +8,10 @@ def twilio_notify(person, locations):
     auth_token = os.environ['twilio_auth_token']
     client = Client(account_sid, auth_token)
 
-    message = client.messages \
-        .create(
+    message = client.messages.create(
         body="Vaccine Available!\n" + locations,
         from_='+13343360125',
-        to='+1' + person._phone_number
+        to='+1' + person.phone_number
     )
 
     print(message.sid)
