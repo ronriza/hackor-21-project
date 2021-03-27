@@ -53,6 +53,8 @@ def get_NY_vaccines():
     now = datetime.datetime.now()
     # add the column to the table
     normalized["last_checked"] = now.strftime("%Y-%m-%d %H:%M:%S")
+    # match cities to zip_codes
+    normalized['zip_code'] = normalized['address'].map(city_to_zip)
     # write to csv
     normalized.to_csv('data.csv')
 
