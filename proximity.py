@@ -135,13 +135,13 @@ def match_sites(list_of_sites: list[Site], list_of_people: list[Person]) -> dict
         except IndexError:
             continue  # ignore zip codes that are out of range
         for i in range(len(distances)):
-            if radius - distances[i] > 0:
+            if distances[i] <= radius:
                 valid_zips.append(i + 10000)    # each index represents a zip code - 10000
         for site in list_of_sites:
             if site.get_availability() and site.get_zip_code() in valid_zips:
                 try:
-                    res[Person].append(site)
+                    res[person].append(site)
                 except KeyError:
-                    res[Person] = [site]
+                    res[person] = [site]
 
     return res

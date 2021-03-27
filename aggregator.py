@@ -41,3 +41,8 @@ class Site:
             raise ValueError("availability must be bool")
         else:
             self._availability = value
+
+    def __repr__(self):
+        return "Site(_name={}, _location={}, _zip_code={}, _last_checked={}, _vaccine_type={}, _facility_type={}," \
+               "_availability={}".format(self._name, self._location, self._zip_code, self._last_checked,
+                                         self._vaccine_type, self._facility_type, self._availability)
