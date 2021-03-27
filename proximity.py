@@ -31,8 +31,7 @@ class Coordinates:
 
             # mean radius calculated by NASA 6371.00 km = 3958.76 mi (formula: 100,000.00 mi = 160,934.40 km)
             # Source: https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html
-            # earth_radius = 3958.76
-            earth_radius = 6373.0
+            earth_radius = 3958.76
 
             # get coordinates in radians
             phi_1 = radians(self.lat)
