@@ -1,6 +1,6 @@
 import smtplib
 import os
-# from user_input import Person
+from user_input import Person
 from sms_alert import twilio_notify
 
 class Notifications:
@@ -15,7 +15,7 @@ class Notifications:
             try:
                 x = self.notified[person]
             except KeyError:
-                locations = "\n".join(self.matches[person])
+                locations = "-" + "\n-".join(self.matches[person])
                 if person._email:
                     self.email_notify(person, locations)
                 if person._phone_number:
@@ -38,15 +38,28 @@ class Notifications:
         """sends sms notification"""
         twilio_notify(person, locations)
 
-# dictionary = {Person(29, 11105, 3, 'ronriza91@gmail.com', "3479686846"): ["Javitz", "SUNY"],
-#         Person(30, 11372, 4, 'rizar@oregonstate.edu'): ["Javitz", "SUNY"]}
-# notifier = Notifications(dictionary)
-# notifier.notify()
-# dictionary[Person(20, 10016, 4, 'ronriza91@gmail.com', "3479686846")] = ["Westchester"]
-# notifier.notify()
+dictionary = {Person(29, 11105, 3, 'ronriza91@gmail.com', "3479686846"): ["Javitz", "SUNY"],
+        Person(30, 11372, 4, 'rizar@oregonstate.edu'): ["Javitz", "SUNY"]}
+notifier = Notifications(dictionary)
+notifier.notify()
+dictionary[Person(20, 10016, 10, 'ronriza91@gmail.com', "3479686846")] = ["Westchester"]
+notifier.notify()
 
-
-
+# people_objects = [
+#     Person(29, 11105, 20, 'ronriza91@gmail.com', "3479686846"),
+#     Person(30, 11372, 20, 'rizar@oregonstate.edu'),
+#     Person(20, 12561, 20, 'ronriza91@gmail.com', "3479686846"),
+#     Person(15, 13820, 20, 'fakeemail@gmail.com', "2125553333"),
+#     Person(25,13902, 20, "blabla@gmail.com", '9998724321')
+# ]
+#
+# site_objects = [
+#     Site("Suny Binghamton", "Binghamton, NY", 13902, 032721, "Pfizer", "NA", True)
+#     Site("Suny Oneonta", "Oneonta, NY", 13820, 032721, "Pfizer", "NA", True)
+#     Site("Javitz Center", "New York, NY", 10001, 032721, "Pfizer", "NA", True)
+#     Site("Ulster Fairgrounds", "New Paltz, NY", 12561, 032721, "Pfizer", "NA", True)
+#     Site("State Fair Expo Center", "Syracuse, NY", 13209, 032721, "PFizer", "NA", True)
+# ]
 
 
 
