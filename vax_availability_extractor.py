@@ -1,6 +1,7 @@
 import requests
 import json
 import pandas
+import datetime
 
 def get_NY_vaccines():
         """Requests NY vaccine api and writes to data.csv"""
@@ -18,6 +19,10 @@ def get_NY_vaccines():
         drop_these_columns = ["isShowable", "providerId"]
         # drop columns
         normalized.drop(columns=drop_these_columns, inplace=True)
+        # create now object
+        now=datetime.datetime.now()
+        # add the column to the table
+        normalized["last_checked"]=now.strftime("%Y-%m-%d %H:%M:%S")
         # write to csv
         normalized.to_csv('data.csv')
 
