@@ -19,7 +19,7 @@ csv_output_obj.to_csv('data.csv')
 
 
 # insert user's zip code here, perhaps this could be a variable
-zip_code="94018"
+zip_code="60618"
 # insert Fahad's zip code api key here from the requirements document or configure as environmental variable
 api_key=""
 zip_code_URL = "https://www.zipcodeapi.com/rest/"+api_key+"/info.json/"+zip_code+"/degrees"
@@ -55,4 +55,11 @@ castlight_api_data=requests.get(url=castlight_url, params=parameters, headers=he
 castlight_json_data=castlight_api_data.json()
 print(json.dumps(castlight_json_data, indent=4, sort_keys=True))
 
-# TODO: format and write this gathered information to CSV file
+# get the providers list of dictionaries and sort (thanks Ron for help with previous example)
+castlight_providers=json.dumps(castlight_json_data['providers'], indent=4, sort_keys=True)
+# create panda object
+castlight_csv_obj=pandas.read_json(castlight_providers, orient="columns")
+# write to csv
+castlight_csv_obj.to_csv('vaccineFinder.csv')
+
+# TODO: instead of rewriting entire file, append add to file when we make an api call. Also try to only have 1 csv file with all data?
