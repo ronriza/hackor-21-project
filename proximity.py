@@ -141,5 +141,4 @@ def match_sites(list_of_sites: list[Site], list_of_people: list[Person]) -> dict
                     res[person].append(site)
                 except KeyError:
                     res[person] = [site]
-
     return res

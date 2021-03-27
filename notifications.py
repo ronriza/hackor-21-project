@@ -1,7 +1,10 @@
 import smtplib
 import os
-# from user_input import Person
 from sms_alert import twilio_notify
+# from proximity import match_sites
+# from aggregator import Site
+# from user_input import Person
+
 
 class Notifications:
     """contains data members and methods required for sending notifications"""
@@ -15,7 +18,10 @@ class Notifications:
             try:
                 x = self.notified[person]
             except KeyError:
-                locations = "\n".join(self.matches[person])
+                location_names = []
+                for site in self.matches[person]:
+                    location_names.append(site._location)
+                locations = "-" + "\n-".join(location_names)
                 if person._email:
                     self.email_notify(person, locations)
                 if person._phone_number:
@@ -38,17 +44,26 @@ class Notifications:
         """sends sms notification"""
         twilio_notify(person, locations)
 
-# dictionary = {Person(29, 11105, 3, 'ronriza91@gmail.com', "3479686846"): ["Javitz", "SUNY"],
-#         Person(30, 11372, 4, 'rizar@oregonstate.edu'): ["Javitz", "SUNY"]}
-# notifier = Notifications(dictionary)
+
+# people_objects = [
+#     Person(29, 11105, 20, 'ronriza91@gmail.com', "3479686846"),
+#     Person(30, 11372, 20, 'rizar@oregonstate.edu'),
+#     Person(20, 12561, 20, 'ronriza91@gmail.com', "3479686846"),
+#     Person(15, 13820, 20, 'fakeemail@gmail.com', "2125553333"),
+#     Person(25,13902, 20, "blabla@gmail.com", '9998724321')
+# ]
+#
+# site_objects = [
+#     Site("Suny Binghamton", "Binghamton, NY", 13902, 32721, "Pfizer", "NA", True),
+#     Site("Suny Oneonta", "Oneonta, NY", 13820, 32721, "Pfizer", "NA", True),
+#     Site("Javitz Center", "New York, NY", 10001, 32721, "Pfizer", "NA", True),
+#     Site("Ulster Fairgrounds", "New Paltz, NY", 12561, 32721, "Pfizer", "NA", True),
+#     Site("State Fair Expo Center", "Syracuse, NY", 13209, 32721, "PFizer", "NA", True)
+# ]
+#
+# matched = match_sites(site_objects, people_objects)
+# notifier = Notifications(matched)
 # notifier.notify()
-# dictionary[Person(20, 10016, 4, 'ronriza91@gmail.com', "3479686846")] = ["Westchester"]
 # notifier.notify()
-
-
-
-
-
-
 
 
