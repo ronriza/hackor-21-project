@@ -50,23 +50,30 @@ class Site:
                                          self._vaccine_type, self._facility_type, self._availability)
 
     @staticmethod
-    def csv_to_site(filepath: str) -> list:
+    def csv_to_sites(filepath: str) -> list:
         """Returns a list of Site objects generated from a properly formatted CSV located at filepath"""
         res = []
         with open(filepath, 'r') as file:
             reader = csv.reader(file)
             for row in reader:
-                if not row:  # skip potential empty headers
+                try:
+                    name = row[0]
+                    location = row[1]
+                    zip_code = int(row[2])
+                    last_checked = int(row[3])
+                    vaccine_type = row[4]
+                    facility_type = row[5]
+                    availability = bool(row[6])
+                    res.append(Site(name, location, zip_code, last_checked, vaccine_type, facility_type, availability))
+                except IndexError:
+                    if not row:
+                        print("Skipping empty row...")
+                        continue
+                    else:
+                        raise
+                except ValueError:
+                    print("Unable to cast value. Skipping row...")
                     continue
-
-                name = row[0]
-                location = row[1]
-                zip_code = int(row[2])
-                last_checked = int(row[3])
-                vaccine_type = row[4]
-                facility_type = row[5]
-                availability = bool(row[6])
-                res.append(Site(name, location, zip_code, last_checked, vaccine_type, facility_type, availability))
 
         return res
 
