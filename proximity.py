@@ -1,8 +1,10 @@
 import csv
-import pickle
+import numpy as np
 from dataclasses import dataclass
 from math import radians, sqrt, sin, cos, asin
 from os import path
+from user_input import Person
+from aggregator import Site
 
 
 @dataclass(frozen=True)
@@ -44,19 +46,18 @@ class Coordinates:
             return 2 * earth_radius * asin(sqrt(sin_squared_lat + cos(phi_1) * cos(phi_2) * sin_squared_lon))
 
 
-def zip_code_distance_matrix() -> dict:
-    """Returns a dictionary of (zip, zip) -> distance pairs"""
+def zip_code_distance_matrix_ny() -> np.array:
+    """Returns a numpy array where [zip - 10000][zip - 10000] = distance:float for all zip codes in NY"""
 
-    # TODO: Avoid using pickle
-    matrix_file = "res/ZipCodeDistanceMatrix.dat"
+    matrix_file = "res/ZipCodeMatrixNY.npy"
 
+    # if the array exists, load it into memory and return it
     if path.exists(matrix_file):
-        with open(matrix_file, "rb") as file:
-            zip_code_distances = pickle.load(file)
-        return zip_code_distances
+        distance_matrix = np.load(matrix_file)
+    # otherwise, create it, write it and return it
     else:
-        # build a state -> {zip -> coord} dictionary and write it to a json
-        zip_code_coords_by_state = {}
+        # build a zip -> coord dictionary
+        zip_code_coordinates = {}
 
         with open("res/ZipCodeSourceData.csv", 'r') as zips:
             # File is tab-delimited. We only care about the data in the following columns:
@@ -70,34 +71,52 @@ def zip_code_distance_matrix() -> dict:
                     zip_code, state, lat, lon = int(row[1]), row[4], float(row[9]), float(row[10])
                 except ValueError:  # keep going if there's a formatting error on one row
                     continue
-                finally:
-                    if state == "":  # empty values are APOs/FPOs, so skip those
-                        continue
 
-                # add the zip code to the second level of the dictionary
-                try:
-                    zip_code_coords_by_state[state].update({zip_code: Coordinates(lat, lon)})
-                except KeyError:
-                    zip_code_coords_by_state[state] = {zip_code: Coordinates(lat, lon)}
+                # only add values for NY currently
+                if state == "NY":
+                    zip_code_coordinates[zip_code] = Coordinates(lat, lon)
 
-        zip_code_distances = {}  # (zip, zip) -> distance}
+        # create zip1 x zip2 = distance matrix
+        # zip codes in NY range from 10000 to 14999, so subtract 10000 from the zip code to match it to its index
+        distance_matrix = np.zeros((5000, 5000), dtype=np.float64)
+        for zip1, coord1 in zip_code_coordinates.items():
+            for zip2, coord2 in zip_code_coordinates.items():
+                # skip special government zipcodes that are out of range
+                if zip1 not in range(10000, 15000) or zip2 not in range(10000, 15000):
+                    continue
+                else:
+                    array_zip1 = zip1 - 10000
+                    array_zip2 = zip2 - 10000
 
-        # TODO: Fix this so that it works with (zip1, zip2) tuples and not strings
-        for state in zip_code_coords_by_state:
-            for zip_code_1, coord_1 in zip_code_coords_by_state[state].items():
-                for zip_code_2, coord_2 in zip_code_coords_by_state[state].items():
-                    zip_code_distances[(zip_code_1, zip_code_2)] = coord_1.distance(coord_2)
+                # distance is the same in either direction, so avoid recomputing if possible
+                if distance_matrix[array_zip2][array_zip1]:
+                    distance_matrix[array_zip1][array_zip2] = distance_matrix[array_zip2][array_zip1]
+                # otherwise, compute the distance between the zips and add it to the dictionary
+                else:
+                    distance_matrix[array_zip1][array_zip2] = coord1.distance(coord2)
 
-        with open(matrix_file, "wb") as file:
-            pickle.dump(zip_code_distances, file)
+        # # create dictionary to store (zip1, zip2) -> distance pairs
+        # zip_code_distances = {}
+        #
+        # # generate (zip1, zip2) -> distance tuple pairs
+        # for zip1, coord1 in zip_code_coordinates.items():
+        #     for zip2, coord2 in zip_code_coordinates.items():
+        #         # distance is the same in either direction, so avoid recomputing it if possible
+        #         if (zip2, zip1) in zip_code_distances:
+        #             zip_code_distances[(zip1, zip2)] = zip_code_distances[(zip2, zip1)]
+        #         # otherwise, compute the distance between the zips and add it to the dictionary
+        #         else:
+        #             zip_code_distances[(zip1, zip2)] = coord1.distance(coord2)
 
-    return zip_code_distance_matrix()
+        # write the dictionary to disk to avoid recomputing it later
+        np.save(matrix_file, distance_matrix)
+
+    return distance_matrix
 
 
-# noinspection PyUnresolvedReferences
-def match_sites(list_of_sites: list, list_of_people: list) -> dict:
-    """
-    Returns a dictionary of People -> Sites matching TODO: criteria
-    """
+def match_sites(list_of_sites: list[Site], list_of_people: list[Person]) -> dict:
+    """Returns a dictionary of People -> Sites with availability in specified radius"""
+
+    distance_matrix = zip_code_distance_matrix_ny()
 
     return NotImplemented
