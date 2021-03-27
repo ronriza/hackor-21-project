@@ -3,6 +3,35 @@ import json
 import pandas
 import datetime
 
+city_to_zip = {
+    "Albany, NY": 12222,
+    "Corning, NY": 14830,
+    "Henrietta, NY": 14467,
+    "Johnson City, NY": 13902,
+    "Middletown, NY": 10940,
+    "Oneonta, NY": 13820,
+    "Plattsburgh, NY": 12903,
+    "Potsdam, NY": 13676,
+    "Queensbury, NY": 12804,
+    "Syracuse, NY": 13209,
+    "Utica, NY": 13502,
+    "Brentwood, NY": 11784,
+    "Brooklyn, NY": 11225,
+    "Buffalo, NY": 14215,
+    "Glen Head, NY": 11568,
+    "Jamaica, NY": 11451,
+    "New Paltz, NY": 12561,
+    "New York, NY": 10001,
+    "Niagara Falls, NY": 14303,
+    "Rochester, NY": 14608,
+    "South Ozone Park, NY": 11420,
+    "Southampton, NY": 11968,
+    "Stony Brook, NY": 11794,
+    "Wantagh, NY": 11793,
+    "White Plains, NY": 10606,
+    "Yonkers, NY": 10701
+}
+
 def get_NY_vaccines():
         """Requests NY vaccine api and writes to data.csv"""
 
@@ -23,6 +52,8 @@ def get_NY_vaccines():
         now=datetime.datetime.now()
         # add the column to the table
         normalized["last_checked"]=now.strftime("%Y-%m-%d %H:%M:%S")
+        # match cities to zip_codes
+        normalized['zip_code'] = normalized['address'].map(city_to_zip)
         # write to csv
         normalized.to_csv('data.csv')
 
