@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import csv
 
 
 @dataclass(frozen=True)
@@ -28,7 +29,7 @@ class Person:
 
     def get_phone_number(self):
         """Returns phone number of person"""
-        return self._email
+        return self._phone_number
 
     @property
     def age(self) -> int:
@@ -50,6 +51,19 @@ class Person:
     def phone_number(self) -> str:
         return self._phone_number
 
+    @staticmethod
+    def csv_to_person(filepath: str) -> list:
+        object_list = []
+        with open(filepath, 'r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                age = int(row[0])
+                zip = int(row[1])
+                radius = int(row[2])
+                email = row[3]
+                phone = row[4]
+                object_list.append(Person(age, zip, radius, email, phone))
+        return object_list
 
 # test = Person(12, 8854, 3, 'cat@gmail.com')
 # print(test.__hash__())
