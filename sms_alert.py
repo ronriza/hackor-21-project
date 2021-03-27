@@ -12,7 +12,7 @@ def twilio_notify(person, locations):
         .create(
         body="Vaccine Available!\n" + locations,
         from_='+13343360125',
-        to='+1' + person._number
+        to='+1' + person._phone_number
     )
 
     print(message.sid)
