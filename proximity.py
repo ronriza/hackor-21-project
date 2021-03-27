@@ -115,7 +115,7 @@ def zip_code_distance_matrix_ny() -> np.array:
 
 
 def match_sites(list_of_sites: list[Site], list_of_people: list[Person]) -> dict:
-    """Returns a dictionary of People -> Sites with availability in specified radius"""
+    """Returns a dictionary of People -> Sites with availability in specified radius meeting criteria"""
 
     res = {}  # dictionary to be returned
 
@@ -128,18 +128,20 @@ def match_sites(list_of_sites: list[Site], list_of_people: list[Person]) -> dict
     for person in list_of_people:
         # get criteria to be checked
         age, zip_code, radius = person.get_age(), person.get_person_zipcode(), person.get_radius()
-
         # generate list of zip codes that meet distance criteria
         valid_zips = []
-        distances = get_row(zip_code)
+        try:
+            distances = get_row(zip_code)
+        except IndexError:
+            continue  # ignore zip codes that are out of range
         for i in range(len(distances)):
             if radius - distances[i] > 0:
                 valid_zips.append(i + 10000)    # each index represents a zip code - 10000
-
         for site in list_of_sites:
             if site.get_availability() and site.get_zip_code() in valid_zips:
                 try:
                     res[Person].append(site)
                 except KeyError:
                     res[Person] = [site]
+
     return res
