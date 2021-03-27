@@ -53,6 +53,7 @@ def zip_code_distance_matrix() -> dict:
     if path.exists(matrix_file):
         with open(matrix_file, "rb") as file:
             zip_code_distances = pickle.load(file)
+        return zip_code_distances
     else:
         # build a state -> {zip -> coord} dictionary and write it to a json
         zip_code_coords_by_state = {}
