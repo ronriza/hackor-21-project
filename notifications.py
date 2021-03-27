@@ -7,8 +7,14 @@ class Notifications:
         self.notified = {}
 
     def email_notify(self):
+        for key in self.matches:
+            try:
+
+            except
+
 
     def phone_notify(self):
+
 
     def alternate_notify(self):
 
