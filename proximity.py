@@ -114,10 +114,9 @@ def zip_code_distance_matrix_ny() -> np.array:
 
 
 def match_sites(list_of_sites: list[Site], list_of_people: list[Person]) -> dict:
-    """Returns a dictionary of People -> Sites with availability in specified radius meeting criteria"""
+    """Returns a dictionary of People -> Sites with availability in Person's desired radius with availability"""
 
     res = {}  # dictionary to be returned
-
     distance_matrix = zip_code_distance_matrix_ny()  # array with [zip1 - 10000][zip2 - 10000] = distance
 
     def get_row(zip_):
@@ -125,8 +124,8 @@ def match_sites(list_of_sites: list[Site], list_of_people: list[Person]) -> dict
 
     # find sites that are in desired range
     for person in list_of_people:
-        # get criteria to be checked
-        age, zip_code, radius = person.get_age(), person.get_person_zipcode(), person.get_radius()
+        # get distance criteria to be checked
+        zip_code, radius = person.get_person_zipcode(), person.get_radius()
         # generate list of zip codes that meet distance criteria
         valid_zips = []
         try:
