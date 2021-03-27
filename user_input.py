@@ -3,11 +3,12 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Person:
-    """Represents a Person with the necessary attributes to notify the person of vaccine availability """
+    """Represents a Person with the necessary attributes to notify the person of vaccine availability"""
     _age: int
     _person_zipcode: int
     _radius: int
-    _email: str
+    _email: str = ""
+    _phone_number: str = ""
 
     def get_age(self):
         """Returns age of person"""
@@ -18,11 +19,15 @@ class Person:
         return self._person_zipcode
 
     def get_radius(self):
-        """Returns radius of person"""
+        """Returns radius to search"""
         return self._radius
 
     def get_email(self):
         """Returns email of person"""
+        return self._email
+
+    def get_phone_number(self):
+        """Returns phone number of person"""
         return self._email
 
     @property
@@ -41,8 +46,10 @@ class Person:
     def email(self) -> str:
         return self._email
 
+    @property
+    def phone_number(self) -> str:
+        return self._phone_number
+
+
 # test = Person(12, 8854, 3, 'cat@gmail.com')
 # print(test.__hash__())
-
-
-# Need to create logic to cap radius
