@@ -56,6 +56,9 @@ class Site:
         with open(filepath, 'r') as file:
             reader = csv.reader(file)
             for row in reader:
+                if not row:  # skip potential empty headers
+                    continue
+
                 name = row[0]
                 location = row[1]
                 zip_code = int(row[2])

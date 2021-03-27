@@ -1,3 +1,4 @@
+import csv
 from dataclasses import dataclass
 
 
@@ -49,7 +50,3 @@ class Person:
     @property
     def phone_number(self) -> str:
         return self._phone_number
-
-
-# test = Person(12, 8854, 3, 'cat@gmail.com')
-# print(test.__hash__())
