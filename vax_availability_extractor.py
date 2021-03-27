@@ -10,15 +10,23 @@ def get_NY_vaccines():
         # prints am-i-eligible json
         #print(json.dumps(response.json()['providerList'], indent=4, sort_keys=True))
         data=json.dumps(response.json()['providerList'], indent=4, sort_keys=True)
-        csv_output_obj=pandas.read_json(data, orient="columns")
-        csv_output_obj.to_csv('data.csv')
+        #convert to string
+        json_loads=json.loads(data)
+        # flatten
+        normalized = pandas.json_normalize(json_loads)
+        # columns to drop
+        drop_these_columns = ["isShowable", "providerId"]
+        # drop columns
+        normalized.drop(columns=drop_these_columns, inplace=True)
+        # write to csv
+        normalized.to_csv('data.csv')
 
 
 def get_lat_long(zip_code_string):
         """Gets latitude and longitutde from zip code api. Returns latitude and longitude strings."""
 
         # insert zip code api key here from the requirements document or configure as environmental variable
-        api_key = ""
+        api_key = "Sqd7cXx6u2q8nlmuc1epHAVujrnwFlQl8ikMQBSPwu2z2YWZ2BMto8ZDgTCAH2l7"
         zip_code_URL = "https://www.zipcodeapi.com/rest/" + api_key + "/info.json/" + zip_code_string + "/degrees"
 
         # sending get request and saving the response as response object
@@ -50,11 +58,17 @@ def get_vaccinefinder_data(zipcode_string):
         # send api request
         castlight_api_data=requests.get(url=castlight_url, params=parameters, headers=headers_list, timeout=30)
         castlight_json_data=castlight_api_data.json()
-        print(json.dumps(castlight_json_data, indent=4, sort_keys=True))
+        #print(json.dumps(castlight_json_data, indent=4, sort_keys=True))
 
         # get the providers list of dictionaries and sort (thanks Ron for help with previous example)
         castlight_providers=json.dumps(castlight_json_data['providers'], indent=4, sort_keys=True)
-        # create panda object
-        castlight_csv_obj=pandas.read_json(castlight_providers, orient="columns")
+        # convert to string
+        castlight_loads=json.loads(castlight_providers)
+        # drop these columns
+        columns_to_drop=["address2", "guid", "phone", "lat", "long", "distance"]
+        # flatten
+        normalized_data=pandas.json_normalize(castlight_loads)
+        # drop columns
+        normalized_data.drop(columns=columns_to_drop, inplace=True)
         # write to csv
-        castlight_csv_obj.to_csv('vaccineFinderData.csv')
+        normalized_data.to_csv('vaccineFinderData.csv')
