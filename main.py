@@ -12,4 +12,7 @@ if __name__ == "__main__":
     site_objects = Site.csv_to_sites("res/data.csv")
     matched_dict = match_sites(site_objects, person_objects)
     notifier = Notifications(matched_dict)
-    notifier.notify()
+    try:
+        notifier.notify()
+    except KeyError:
+        raise
