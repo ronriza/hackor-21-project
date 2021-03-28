@@ -60,55 +60,55 @@ def get_NY_vaccines():
     normalized.to_csv('res/data.csv')
 
 
-def get_lat_long(zip_code_string):
-    """Gets latitude and longitutde from zip code api. Returns latitude and longitude strings."""
+# def get_lat_long(zip_code_string):
+#     """Gets latitude and longitutde from zip code api. Returns latitude and longitude strings."""
 
-    # insert zip code api key here from the requirements document or configure as environmental variable
-    api_key = "Sqd7cXx6u2q8nlmuc1epHAVujrnwFlQl8ikMQBSPwu2z2YWZ2BMto8ZDgTCAH2l7"
-    zip_code_URL = "https://www.zipcodeapi.com/rest/" + api_key + "/info.json/" + zip_code_string + "/degrees"
+#     # insert zip code api key here from the requirements document or configure as environmental variable
+#     api_key = "Sqd7cXx6u2q8nlmuc1epHAVujrnwFlQl8ikMQBSPwu2z2YWZ2BMto8ZDgTCAH2l7"
+#     zip_code_URL = "https://www.zipcodeapi.com/rest/" + api_key + "/info.json/" + zip_code_string + "/degrees"
 
-    # sending get request and saving the response as response object
-    zip_code_request = requests.get(url=zip_code_URL)
+#     # sending get request and saving the response as response object
+#     zip_code_request = requests.get(url=zip_code_URL)
 
-    # extracting data in json format
-    zip_code_json_data = zip_code_request.json()
-    # received latitude coordinates
-    zip_latitude = zip_code_json_data["lat"]
-    # received longitude coordinates
-    zip_longitude = zip_code_json_data["lng"]
-    return zip_latitude, zip_longitude
+#     # extracting data in json format
+#     zip_code_json_data = zip_code_request.json()
+#     # received latitude coordinates
+#     zip_latitude = zip_code_json_data["lat"]
+#     # received longitude coordinates
+#     zip_longitude = zip_code_json_data["lng"]
+#     return zip_latitude, zip_longitude
 
 
-def get_vaccinefinder_data(zipcode_string):
-    """Gets vaccinefinder.org data and writes to vaccineFinderData.csv"""
-    # gets lat/long from zip code
-    latitude, longitude = get_lat_long(zipcode_string)
-    # we are the Postman
-    headers_list = {"User-Agent": 'PostmanRuntime/7.26.10'}
-    # api endpoint url
-    castlight_url = "https://api.us.castlighthealth.com/vaccine-finder/v1/provider-locations/search"
-    # query parameters, search radius can be changed
-    parameters = {
-        "medicationGuids": "779bfe52-0dd8-4023-a183-457eb100fccc,a84fb9ed-deb4-461c-b785-e17c782ef88b,784db609-dc1f-45a5-bad6-8db02e79d44f",
-        "lat": latitude,
-        "long": longitude,
-        "radius": 10}
+# def get_vaccinefinder_data(zipcode_string):
+#     """Gets vaccinefinder.org data and writes to vaccineFinderData.csv"""
+#     # gets lat/long from zip code
+#     latitude, longitude = get_lat_long(zipcode_string)
+#     # we are the Postman
+#     headers_list = {"User-Agent": 'PostmanRuntime/7.26.10'}
+#     # api endpoint url
+#     castlight_url = "https://api.us.castlighthealth.com/vaccine-finder/v1/provider-locations/search"
+#     # query parameters, search radius can be changed
+#     parameters = {
+#         "medicationGuids": "779bfe52-0dd8-4023-a183-457eb100fccc,a84fb9ed-deb4-461c-b785-e17c782ef88b,784db609-dc1f-45a5-bad6-8db02e79d44f",
+#         "lat": latitude,
+#         "long": longitude,
+#         "radius": 10}
 
-    # send api request
-    castlight_api_data = requests.get(url=castlight_url, params=parameters, headers=headers_list, timeout=30)
-    castlight_json_data = castlight_api_data.json()
-    # print(json.dumps(castlight_json_data, indent=4, sort_keys=True))
+#     # send api request
+#     castlight_api_data = requests.get(url=castlight_url, params=parameters, headers=headers_list, timeout=30)
+#     castlight_json_data = castlight_api_data.json()
+#     # print(json.dumps(castlight_json_data, indent=4, sort_keys=True))
 
-    # get the providers list of dictionaries and sort (thanks Ron for help with previous example)
-    castlight_providers = json.dumps(castlight_json_data['providers'], indent=4, sort_keys=True)
-    # convert to string
-    castlight_loads = json.loads(castlight_providers)
-    # drop these columns
-    columns_to_drop = ["address2", "guid", "phone", "lat", "long", "distance"]
-    # flatten
-    normalized_data = pandas.json_normalize(castlight_loads)
-    # drop columns
-    normalized_data.drop(columns=columns_to_drop, inplace=True)
-    # write to csv
-    normalized_data.to_csv('vaccineFinderData.csv')
+#     # get the providers list of dictionaries and sort (thanks Ron for help with previous example)
+#     castlight_providers = json.dumps(castlight_json_data['providers'], indent=4, sort_keys=True)
+#     # convert to string
+#     castlight_loads = json.loads(castlight_providers)
+#     # drop these columns
+#     columns_to_drop = ["address2", "guid", "phone", "lat", "long", "distance"]
+#     # flatten
+#     normalized_data = pandas.json_normalize(castlight_loads)
+#     # drop columns
+#     normalized_data.drop(columns=columns_to_drop, inplace=True)
+#     # write to csv
+#     normalized_data.to_csv('vaccineFinderData.csv')
 
