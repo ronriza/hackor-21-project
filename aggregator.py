@@ -4,7 +4,7 @@ import csv
 class Site:
     """Site that may or may not have availability"""
 
-    def __init__(self, name: str, location: str, zip_code: int, last_checked: int, vaccine_type: str,
+    def __init__(self, name: str, location: str, zip_code: int, last_checked: str, vaccine_type: str,
                  facility_type: str, availability: bool):
         """Creates a Site object with the specified attributes"""
         self._name = name
@@ -58,13 +58,16 @@ class Site:
             reader = csv.reader(file)
             for row in reader:
                 try:
-                    name = row[0]
                     location = row[1]
-                    zip_code = int(row[2])
-                    last_checked = int(row[3])
+                    if row[2] == "Y":
+                        availability = True
+                    else:
+                        availability = False
+                    name = row[3]
                     vaccine_type = row[4]
-                    facility_type = row[5]
-                    availability = bool(row[6])
+                    zip_code = int(float(row[6]))
+                    last_checked = row[5]
+                    facility_type = ""
                     res.append(Site(name, location, zip_code, last_checked, vaccine_type, facility_type, availability))
                 except IndexError:
                     if not row:

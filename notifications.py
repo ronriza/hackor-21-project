@@ -20,7 +20,7 @@ class Notifications:
             except KeyError:
                 location_names = []
                 for site in self.matches[person]:
-                    location = site.get_location()
+                    location = site.get_name()
                     location_names.append(location)
                 locations = "-" + "\n-".join(location_names)
                 if person.email:
