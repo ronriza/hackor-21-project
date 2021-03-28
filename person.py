@@ -53,17 +53,20 @@ class Person:
 
     @staticmethod
     def csv_to_person(filepath: str) -> list:
+        """Returns a list of Person objects from a correctly formatted CSV file located at filepath"""
         object_list = []
         with open(filepath, 'r') as file:
             reader = csv.reader(file)
             for row in reader:
-                age = int(row[0])
-                zip = int(row[1])
-                radius = int(row[2])
-                email = row[3]
-                phone = row[4]
-                object_list.append(Person(age, zip, radius, email, phone))
-        return object_list
+                try:
+                    age = int(row[0])
+                    zip_ = int(row[1])
+                    radius = int(row[2])
+                    email = row[3]
+                    phone = row[4]
+                    object_list.append(Person(age, zip_, radius, email, phone))
+                except ValueError:
+                    print("Unable to cast value. Skipping row...")
+                    continue
 
-# test = Person(12, 8854, 3, 'cat@gmail.com')
-# print(test.__hash__())
+        return object_list

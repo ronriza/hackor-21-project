@@ -16,30 +16,39 @@ class Site:
         self._availability = availability
 
     def get_name(self):
+        """Returns site name"""
         return self._name
 
     def get_location(self):
+        """Returns site location"""
         return self._location
 
     def get_zip_code(self):
+        """Returns site zip code as an int without leading zeros"""
         return self._zip_code
 
     def get_last_checked(self):
+        """Returns time site data was last checked in 'yyyy-mm-dd hh:mm:ss' format"""
         return self._last_checked
 
     def get_vaccine_type(self):
+        """Returns vaccine type available at location"""
         return self._vaccine_type
 
     def get_facility_type(self):
+        """Returns facility type"""
         return self._facility_type
 
     def get_availability(self):
+        """Returns whether there are available appointments at facility"""
         return self._availability
 
     def set_last_checked(self, value):
+        """Sets last checked"""
         self._last_checked = value
 
     def set_availability(self, value):
+        """Sets whether there are available appointments at facility."""
         if not isinstance(value, bool):
             raise ValueError("availability must be bool")
         else:
@@ -56,6 +65,8 @@ class Site:
         res = []
         with open(filepath, 'r') as file:
             reader = csv.reader(file)
+            if csv.Sniffer().has_header(filepath):
+                next(reader)    # skip header row if it exists
             for row in reader:
                 try:
                     location = row[1]
@@ -69,12 +80,6 @@ class Site:
                     last_checked = row[5]
                     facility_type = ""
                     res.append(Site(name, location, zip_code, last_checked, vaccine_type, facility_type, availability))
-                except IndexError:
-                    if not row:
-                        print("Skipping empty row...")
-                        continue
-                    else:
-                        raise
                 except ValueError:
                     print("Unable to cast value. Skipping row...")
                     continue

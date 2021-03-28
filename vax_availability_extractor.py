@@ -18,6 +18,7 @@ city_to_zip = {
     "Brentwood, NY": 11784,
     "Brooklyn, NY": 11225,
     "Buffalo, NY": 14215,
+    "Bronx, NY": 10466,
     "Glen Head, NY": 11568,
     "Jamaica, NY": 11451,
     "New Paltz, NY": 12561,
