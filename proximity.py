@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from math import radians, sqrt, sin, cos, asin
 from os import path
 from person import Person
-from site import Site
+from vaccine_site import Site
 
 
 @dataclass(frozen=True)
