@@ -56,7 +56,7 @@ def get_NY_vaccines():
     # match cities to zip_codes
     normalized['zip_code'] = normalized['address'].map(city_to_zip)
     # write to csv
-    normalized.to_csv('data.csv')
+    normalized.to_csv('res/data.csv')
 
 
 def get_lat_long(zip_code_string):
@@ -110,3 +110,4 @@ def get_vaccinefinder_data(zipcode_string):
     normalized_data.drop(columns=columns_to_drop, inplace=True)
     # write to csv
     normalized_data.to_csv('vaccineFinderData.csv')
+
