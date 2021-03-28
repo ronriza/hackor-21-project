@@ -34,10 +34,13 @@ class Notifications:
         conn = smtplib.SMTP('smtp.gmail.com', 587)
         conn.ehlo()
         conn.starttls()
-        conn.login('covidvaccinenotification@gmail.com', os.environ['password'])
-        conn.sendmail('covidvaccinenotifier@gmail.com', person.email,
-                      'Subject: New vaccine availability\n\nWe have found new vaccine '
-                      'availability for you at the following locations:\n' + locations)
+        try:
+            conn.login('covidvaccinenotification@gmail.com', os.environ['password'])
+            conn.sendmail('covidvaccinenotifier@gmail.com', person.email,
+                          'Subject: New vaccine availability\n\nWe have found new vaccine '
+                          'availability for you at the following locations:\n' + locations)
+        except KeyError:
+            print("password environment variable not set. Unable to send email.")
 
     @staticmethod
     def phone_notify(person, locations):
