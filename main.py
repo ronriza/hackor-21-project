@@ -1,7 +1,7 @@
 from proximity import match_sites
 from notifications import Notifications
-from user_input import Person
-from aggregator import Site
+from person import Person
+from site import Site
 from vax_availability_extractor import get_NY_vaccines
 
 

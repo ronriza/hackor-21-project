@@ -3,8 +3,8 @@ import numpy as np
 from dataclasses import dataclass
 from math import radians, sqrt, sin, cos, asin
 from os import path
-from user_input import Person
-from aggregator import Site
+from person import Person
+from site import Site
 
 
 @dataclass(frozen=True)
@@ -39,6 +39,7 @@ class Coordinates:
             lam_1 = radians(self.lon)
             lam_2 = radians(other.lon)
 
+            # calculate and return great circle distance
             sin_squared_lat = sin((phi_2 - phi_1) / 2) ** 2
             sin_squared_lon = sin((lam_2 - lam_1) / 2) ** 2
 
@@ -46,18 +47,17 @@ class Coordinates:
 
 
 def zip_code_distance_matrix_ny() -> np.array:
-    """Returns a numpy array where [zip - 10000][zip - 10000] = distance:float for all zip codes in NY"""
+    """Returns a numpy array where [zip - 10000][zip - 10000] = distance: float for valid NY zip codes only"""
 
     matrix_file = "res/ZipCodeMatrixNY.npy"
 
-    # if the array exists, load it into memory and return it
+    # if the array exists, load it into memory and return it (to save computation time)
     if path.exists(matrix_file):
         distance_matrix = np.load(matrix_file)
     # otherwise, create it, write it and return it
     else:
         # build a zip -> coord dictionary
         zip_code_coordinates = {}
-
         with open("res/ZipCodeSourceData.csv", 'r') as zips:
             # File is tab-delimited. We only care about the data in the following columns:
             #  Col#   2     3     4          5         10    11
@@ -75,14 +75,13 @@ def zip_code_distance_matrix_ny() -> np.array:
                 if state == "NY":
                     zip_code_coordinates[zip_code] = Coordinates(lat, lon)
 
-        # create zip1 x zip2 = distance matrix
+        # create [zip1 - 10000] x [zip2 - 10000] = distance matrix from the zip -> coord dictionary
         # zip codes in NY range from 10000 to 14999, so subtract 10000 from the zip code to match it to its index
         distance_matrix = np.zeros((5000, 5000), dtype=np.float64)
         for zip1, coord1 in zip_code_coordinates.items():
             for zip2, coord2 in zip_code_coordinates.items():
-                # skip special government zipcodes that are out of range
                 if zip1 not in range(10000, 15000) or zip2 not in range(10000, 15000):
-                    continue
+                    continue  # skip special use (e.g. IRS) zipcodes that are out of range
                 else:
                     array_zip1 = zip1 - 10000
                     array_zip2 = zip2 - 10000
@@ -107,7 +106,7 @@ def zip_code_distance_matrix_ny() -> np.array:
         #         else:
         #             zip_code_distances[(zip1, zip2)] = coord1.distance(coord2)
 
-        # write the dictionary to disk to avoid recomputing it later
+        # write the matrix to disk to avoid recomputing it later
         np.save(matrix_file, distance_matrix)
 
     return distance_matrix
@@ -116,7 +115,7 @@ def zip_code_distance_matrix_ny() -> np.array:
 def match_sites(list_of_sites: list[Site], list_of_people: list[Person]) -> dict:
     """Returns a dictionary of People -> Sites with availability in Person's desired radius with availability"""
 
-    res = {}  # dictionary to be returned
+    matches = {}  # dictionary to be returned
     distance_matrix = zip_code_distance_matrix_ny()  # array with [zip1 - 10000][zip2 - 10000] = distance
 
     def get_row(zip_):
@@ -138,7 +137,7 @@ def match_sites(list_of_sites: list[Site], list_of_people: list[Person]) -> dict
         for site in list_of_sites:
             if site.get_availability() and site.get_zip_code() in valid_zips:
                 try:
-                    res[person].append(site)
+                    matches[person].append(site)
                 except KeyError:
-                    res[person] = [site]
-    return res
+                    matches[person] = [site]
+    return matches
