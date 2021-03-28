@@ -1,9 +1,6 @@
 import smtplib
 import os
 from sms_alert import twilio_notify
-# from proximity import match_sites
-# from aggregator import Site
-# from user_input import Person
 
 
 class Notifications:
@@ -46,27 +43,3 @@ class Notifications:
     def phone_notify(person, locations):
         """sends sms notification"""
         twilio_notify(person, locations)
-
-
-# people_objects = [
-#     Person(29, 11105, 20, 'ronriza91@gmail.com', "3479686846"),
-#     Person(30, 11372, 20, 'rizar@oregonstate.edu'),
-#     Person(20, 12561, 20, 'ronriza91@gmail.com', "3479686846"),
-#     Person(15, 13820, 20, 'fakeemail@gmail.com', "2125553333"),
-#     Person(25,13902, 20, "blabla@gmail.com", '9998724321')
-# ]
-#
-# site_objects = [
-#     Site("Suny Binghamton", "Binghamton, NY", 13902, 32721, "Pfizer", "NA", True),
-#     Site("Suny Oneonta", "Oneonta, NY", 13820, 32721, "Pfizer", "NA", True),
-#     Site("Javitz Center", "New York, NY", 10001, 32721, "Pfizer", "NA", True),
-#     Site("Ulster Fairgrounds", "New Paltz, NY", 12561, 32721, "Pfizer", "NA", True),
-#     Site("State Fair Expo Center", "Syracuse, NY", 13209, 32721, "PFizer", "NA", True)
-# ]
-#
-# matched = match_sites(site_objects, people_objects)
-# notifier = Notifications(matched)
-# notifier.notify()
-# notifier.notify()
-#
-
