@@ -13,17 +13,22 @@ class Notifications:
         """checks if person has been notified and sends notifications based on contact info"""
         for person in self.matches:
             try:
+                # if user was not already notified, a KeyError would be raised here
                 x = self.notified[person]
             except KeyError:
+                # build a list of available locations from matches dict
                 location_names = []
                 for site in self.matches[person]:
                     location = site.get_name()
                     location_names.append(location)
                 locations = "-" + "\n-".join(location_names)
                 if person.email:
+                    # if person chose to have emails sent to them
                     self.email_notify(person, locations)
                 if person.phone_number:
+                    # if person chose to have phone notifications sent to them
                     self.phone_notify(person, locations)
+                # add person to notified dict
                 self.notified[person] = True
             else:
                 continue

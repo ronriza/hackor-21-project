@@ -4,7 +4,7 @@ from twilio.rest import Client
 
 
 def twilio_notify(person, locations):
-    """sends user a test messsage via twilio"""
+    """sends user a text messsage via twilio"""
     try:
         account_sid = os.environ['twilio_sid']
         auth_token = os.environ['twilio_auth_token']
